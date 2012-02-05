@@ -71,6 +71,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		56DA7CA414DE7AE600E061B1 /* client.d */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.dtrace; name = client.d; path = Dtrace/client.d; sourceTree = "<group>"; };
+		56DA7CA514DE7AE600E061B1 /* server.d */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.dtrace; name = server.d; path = Dtrace/server.d; sourceTree = "<group>"; };
 		56FAB8EF14DC908C002E62E6 /* mach_ipc_client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mach_ipc_client; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FAB8F314DC908C002E62E6 /* mach_ipc_client.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mach_ipc_client.c; sourceTree = "<group>"; };
 		56FAB8F514DC908C002E62E6 /* mach_ipc_client.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = mach_ipc_client.1; sourceTree = "<group>"; };
@@ -99,9 +101,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		56DA7C9A14DE7A6000E061B1 /* Dtrace Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				56DA7CA414DE7AE600E061B1 /* client.d */,
+				56DA7CA514DE7AE600E061B1 /* server.d */,
+			);
+			name = "Dtrace Scripts";
+			sourceTree = "<group>";
+		};
 		56FAB8E214DC9071002E62E6 = {
 			isa = PBXGroup;
 			children = (
+				56DA7C9A14DE7A6000E061B1 /* Dtrace Scripts */,
 				56FAB91014DC91CC002E62E6 /* Common */,
 				56FAB8F214DC908C002E62E6 /* mach_ipc_client */,
 				56FAB90014DC90A3002E62E6 /* mach_ipc_server */,

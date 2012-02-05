@@ -43,28 +43,30 @@ int main(){
     send_message_t    sent_msg;
     mach_msg_header_t* mach_hdr;
     
+    enumerate_ports_with_status(stdout);
+    
     /* Get the bootstrap port for the current login context. */
     result = task_get_bootstrap_port(task_self_port, &boot_port);
     ERR_EXIT(result, "task_get_bootstrap_port failed.");
-    fprintf(stdout, "Bootstrap port introspection: ");
-    port_introspect(stdout, boot_port);
+    
+    printf("Bootstrap port: 0x%.4x\n", boot_port);
     
     /* check in our service directly. No need for resgister etc. */
     result = bootstrap_look_up(boot_port, 
                                 SERVER_NAME, 
                                 &server_port);
     ERR_EXIT(result, "Bootstrap look_up failed.\n");
-
-    fprintf(stdout, "Server port introspection: ");
-    port_introspect(stdout, server_port);
+    printf("Server port: 0x%.4x\n", server_port);
+    
+    enumerate_ports_with_status(stdout);
     
     result = mach_port_allocate(task_self_port, 
                                 MACH_PORT_RIGHT_RECEIVE, 
                                 &recv_port);    
     ERR_EXIT(result, "mach_port_allocate failed.\n");
-    fprintf(stdout, "Receive port allocation introspection: ");
-    port_introspect(stdout, recv_port);
-
+    fprintf(stdout, "Receive port : 0x%.4x\n", recv_port);
+    enumerate_ports_with_status(stdout);
+    
     /* prepare for doing the real work. */
     
     do {
@@ -77,8 +79,8 @@ int main(){
         mach_hdr->msgh_id               = MULTIPLEX_ID;
         mach_hdr->msgh_remote_port      = server_port;
         mach_hdr->msgh_local_port       = recv_port;
-        mach_hdr->msgh_bits             = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND,
-                                                         MACH_MSG_TYPE_MAKE_SEND);
+        mach_hdr->msgh_bits             = MACH_MSGH_BITS(MACH_MSG_TYPE_MOVE_SEND,
+                                                         MACH_MSG_TYPE_MAKE_SEND_ONCE);
         mach_hdr->msgh_size             = sizeof(sent_msg);
         
         result = mach_msg(mach_hdr,
@@ -95,12 +97,9 @@ int main(){
             break;
         }
         
-        fprintf(stdout, "Successfully sent the message.\n");
-        fprintf(stdout, "Recv port introspection after message sent: ");
-        port_introspect(stdout, recv_port);
-        fprintf(stdout, "Server port introspection after message sent: ");
-        port_introspect(stdout, server_port);
-                
+        printf("port status after sending message:\n");
+        enumerate_ports_with_status(stdout);
+        
         mach_hdr = &(received_msg.msg_header);
         
         mach_hdr->msgh_id           = MULTIPLEX_ID;
@@ -121,17 +120,13 @@ int main(){
             fprintf(stderr, "mach_msg(receive) failed. Error: %s\n",
                     mach_error_string(result));
         }
- 
-        fprintf(stdout, "Recv port introspection after message reception: ");
-        port_introspect(stdout, recv_port);
-        fprintf(stdout, "Server port introspection after message reception: ");
-        port_introspect(stdout, server_port);
-        
+        printf("port status after receiving message:\n");
+        enumerate_ports_with_status(stdout);
         fprintf(stdout, 
-                "Received message with ID: %d\n",
-                received_msg.msg_header.msgh_id
+                "Received message with ID: %d\nContents: %s\n",
+                received_msg.msg_header.msgh_id,
+                received_msg.response
                 );
-        
     } while (1);
     
     return 0;

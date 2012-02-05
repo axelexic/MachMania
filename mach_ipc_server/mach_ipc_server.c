@@ -91,8 +91,7 @@ int main(){
          */
         fprintf(stdout, "Remote port introspection:\n");
         port_introspect(stdout, received_msg.msg_header.msgh_remote_port);
-        fprintf(stdout, "Local port introspection:\n");
-        port_introspect(stdout, received_msg.msg_header.msgh_local_port);
+        fprintf(stdout, "Remote bits: %s\n", port_type_2_name(mach_hdr->msgh_bits));
         
         reverse(received_msg.response, sent_msg.request);
         
@@ -100,13 +99,14 @@ int main(){
         mach_hdr->msgh_id               = MULTIPLEX_ID;
         mach_hdr->msgh_remote_port      = received_msg.msg_header.msgh_remote_port;
         mach_hdr->msgh_local_port       = MACH_PORT_NULL;
-        mach_hdr->msgh_bits             = MACH_MSGH_BITS_LOCAL(received_msg.msg_header.msgh_bits);
+        mach_hdr->msgh_bits             = received_msg.msg_header.msgh_bits;
         mach_hdr->msgh_size             = sizeof(sent_msg);
         
         result = mach_msg(mach_hdr,
                           MACH_SEND_MSG, 
                           mach_hdr->msgh_size, 
-                          0, MACH_PORT_NULL, 
+                          0, 
+                          MACH_PORT_NULL, 
                           MACH_MSG_TIMEOUT_NONE, 
                           MACH_PORT_NULL);
 
