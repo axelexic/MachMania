@@ -3,7 +3,7 @@
 //  MachMania
 //
 //  Created by Yogesh Swami on 2/3/12.
-//  Copyright (c) 2012 Axelexic LLC. All rights reserved.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #ifndef MachMania_Common_h
@@ -31,9 +31,6 @@ typedef struct receive_message{
 
 #define SEND_MSG_LEN sizeof(send_message_t)
 #define RECV_MSG_LEN sizeof(receive_message_t)
-
-void port_introspect(FILE* io, mach_port_name_t port_desc);
-char* port_type_2_name(mach_port_type_t type);
 
 void enumerate_ports_with_status(FILE* io);
 

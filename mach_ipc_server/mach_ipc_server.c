@@ -47,16 +47,14 @@ int main(){
     result = task_get_bootstrap_port(task_self_port, &boot_port);
     ERR_EXIT(result, "task_get_bootstrap_port failed.");
     
-    port_introspect(stdout, boot_port);
-    
     /* check in our service directly. No need for resgister etc. */
     result = bootstrap_check_in(boot_port, 
                                 SERVER_NAME, 
                                 &server_port);
     ERR_EXIT(result, "Bootstrap Checkin Failed.\n");
-    port_introspect(stdout, server_port);
+	printf("Server port: 0x%.4x\n", server_port);
     
-    /* prepare for doing the real work. */
+	/* prepare for doing the real work. */
     
     do {
         
@@ -79,19 +77,14 @@ int main(){
         if(result != KERN_SUCCESS){
             fprintf(stderr, "mach_msg(receive) failed. Error: %s\n",
                     mach_error_string(result));
+			continue;
         }
-                
+		
         fprintf(stdout, 
                 "Received message with ID: %d\n",
                 received_msg.msg_header.msgh_id
                 );
 
-        /* Try to dissect the type of port and and obtain additional information
-         * about this port.
-         */
-        fprintf(stdout, "Remote port introspection:\n");
-        port_introspect(stdout, received_msg.msg_header.msgh_remote_port);
-        fprintf(stdout, "Remote bits: %s\n", port_type_2_name(mach_hdr->msgh_bits));
         
         reverse(received_msg.response, sent_msg.request);
         
@@ -113,10 +106,10 @@ int main(){
         if(result != KERN_SUCCESS){
             fprintf(stderr, "mach_msg(send) failed. Error: %s\n",
                     mach_error_string(result));
+			continue;
         }
-        
+		
         fprintf(stdout, "Successfully sent the message.\n");
     } while (1);
-    
     return 0;
 }

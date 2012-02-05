@@ -14,6 +14,7 @@
 #include <mach/vm_map.h>
 #include <assert.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 /* defined in ipc_object.h */
 #define	IO_BITS_KOTYPE		0x00000fff 
@@ -114,13 +115,18 @@ void enumerate_ports_with_status(FILE* io){
     
     kern_return_t result;
     
+	if(io == NULL){
+		io = stdout;
+	}
+	
     result = mach_port_names(mach_task_self(), 
                              &names,
                              &namesCount, 
                              &types,
                              &typesCount);
     assert(namesCount == typesCount);
-    
+	
+    fprintf(io, "Number of ports for pid (%d): %d\n", getpid(), namesCount);
     fprintf(io, "   Port   |  Port  |  Recv  |  Send  | SO     |    Kern Addr,      \n");
     fprintf(io, "   Name   |  Type  |  Ref   |  Ref   | Ref    |    Obj Type        \n");
     fprintf(io, "----------+--------+--------+--------+--------+------------------------------\n");
@@ -142,7 +148,7 @@ void enumerate_ports_with_status(FILE* io){
         fprintf(io, "\n");        
     }
     
-    
+    fprintf(io, "\n\n");
     
     /* kernel does a vm_allocate in the current process address space. */
     vm_deallocate(mach_task_self(), 
