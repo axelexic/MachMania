@@ -42,7 +42,7 @@ int main(){
     receive_message_t received_msg;
     send_message_t    sent_msg;
     mach_msg_header_t* mach_hdr;
-    
+
      /* Get the bootstrap port for the current login context. */
     result = task_get_bootstrap_port(task_self_port, &boot_port);
     ERR_EXIT(result, "task_get_bootstrap_port failed.");

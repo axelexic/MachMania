@@ -27,7 +27,7 @@
 
 static void reverse(const char* const source, char* dest){
     size_t len=strlen(source);
-    for (size_t i = 0; i<len; i++) {
+    for (size_t i = 0; i<len>>1; i++) {
         dest[len-i] = source[i];
     }
     dest[len] = '\0';
@@ -42,18 +42,34 @@ int main(){
     receive_message_t received_msg;
     send_message_t    sent_msg;
     mach_msg_header_t* mach_hdr;
+    char                print_buffer[1024];
 
+    str_mach_port_name(task_self_port, print_buffer, 1024);
+    
+    printf("Task self port: %s\n", print_buffer);
+    
+    result = task_get_special_port(task_self_port,
+                                   TASK_NAME_PORT,
+                                   &boot_port);
+    ERR_EXIT(result, "task_get_special_port failed.");
+    
+    str_mach_port_name(boot_port, print_buffer, 1024);
+    printf("Name port: %s\n", print_buffer);
+    
     /* Get the bootstrap port for the current login context. */
     result = task_get_bootstrap_port(task_self_port, &boot_port);
     ERR_EXIT(result, "task_get_bootstrap_port failed.");
-    
+    str_mach_port_name(boot_port, print_buffer, 1024);
+    printf("Boot strap port: %s\n", print_buffer);
+
     /* check in our service directly. No need for resgister etc. */
     result = bootstrap_check_in(boot_port, 
                                 SERVER_NAME, 
                                 &server_port);
     ERR_EXIT(result, "Bootstrap Checkin Failed.\n");
-	printf("Server port: 0x%.4x\n", server_port);
-    
+    str_mach_port_name(server_port, print_buffer, 1024);
+    printf("Server port: %s\n", print_buffer);
+
 	/* prepare for doing the real work. */
     
     do {

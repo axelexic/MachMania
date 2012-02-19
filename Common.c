@@ -15,6 +15,7 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <mach/port.h>
 
 /* defined in ipc_object.h */
 #define	IO_BITS_KOTYPE		0x00000fff 
@@ -158,4 +159,27 @@ void enumerate_ports_with_status(FILE* io){
     vm_deallocate(mach_task_self(), 
                   (vm_address_t)types, 
                   typesCount*sizeof(mach_port_type_t));
+}
+
+/* 
+ * Print the descriptive name, with port index and 
+ * generation number with it.
+ */
+int str_mach_port_name(mach_port_name_t name, char* buffer, int len){
+    mach_port_name_t index, gen;
+    index = MACH_PORT_INDEX(name);
+    gen = MACH_PORT_GEN(name) >> 24;
+    
+    if (gen != 0) {
+        // This is a user defined port name.
+        return snprintf(buffer, len, "%d:%d", index, gen);
+    }else {
+        return snprintf(buffer, len, "%d:usr",index);
+    }
+}
+
+/* Print the mach msg header. */
+void print_mach_msg_header(FILE* io, 
+                           const mach_msg_header_t* const hdr){
+    
 }

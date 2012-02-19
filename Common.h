@@ -34,4 +34,13 @@ typedef struct receive_message{
 
 void enumerate_ports_with_status(FILE* io);
 
+/* 
+ * Print the descriptive name, with port index and 
+ * generation number with it.
+ */
+int str_mach_port_name(mach_port_name_t name, char* buffer, int len);
+
+/* Print the mach msg header. */
+void print_mach_msg_header(FILE* io, 
+                           const mach_msg_header_t* const hdr);
 #endif
