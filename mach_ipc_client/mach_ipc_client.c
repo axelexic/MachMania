@@ -16,13 +16,14 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 #define ERR_EXIT(result, args...) do{      \
-if(result != KERN_SUCCESS){            \
-fprintf(stderr, args);             \
-fprintf(stderr, " Error: %s\n", mach_error_string(result)); \
-exit(-result);                          \
-}                                           \
+    if(result != KERN_SUCCESS){            \
+        fprintf(stderr, args);             \
+        fprintf(stderr, " Error: %s\n", mach_error_string(result)); \
+        exit(-result);                          \
+    }                                           \
 }while(0)
 
 static void reverse(const char* const source, char* dest){
@@ -33,9 +34,45 @@ static void reverse(const char* const source, char* dest){
     dest[len] = '\0';
 }
 
-int main(){
+#define SHORTCUT(x) { .identifier = #x, .type_name = x }
+
+static struct mach_msg_type_name_to_value{
+    char* identifier;
+    mach_msg_bits_t type_name;
+} MM[]={
+    SHORTCUT(MACH_MSG_TYPE_MOVE_RECEIVE),
+    SHORTCUT(MACH_MSG_TYPE_MOVE_SEND),
+    SHORTCUT(MACH_MSG_TYPE_MOVE_SEND_ONCE),
+    SHORTCUT(MACH_MSG_TYPE_COPY_SEND),
+    SHORTCUT(MACH_MSG_TYPE_MAKE_SEND),
+    SHORTCUT(MACH_MSG_TYPE_MAKE_SEND_ONCE),
+    SHORTCUT(MACH_MSG_TYPE_COPY_RECEIVE)
+};
+
+#define MM_SIZE (sizeof(MM)/sizeof(MM[0]))
+
+static mach_msg_bits_t get_name_to_bits(const char* name){
+    for (int i = 0; i<MM_SIZE; i++) {
+        size_t len = strlen(MM[i].identifier);
+        if (strncmp(name, MM[i].identifier, len) == 0) {
+            return MM[i].type_name;
+        }
+    }
+    return -1;
+}
+
+static void usage(int argc, char* argvp[]){
+    fprintf(stderr, "Usage: %s -l <local_port_disposition> "
+            "-r <remote_port_disposition>\n", argvp[0]);
+    fprintf(stderr, "Possible port dispositions are:\n");
+    for (int i = 0; i<MM_SIZE; i++) {
+        fprintf(stderr, "\t%s\n", MM[i].identifier);
+    }
+}
+
+int main(int argc, char* argvp[]){
     char print_buffer[1024];
-    mach_port_t boot_port;
+    mach_port_t boot_port = bootstrap_port;
     mach_port_t server_port;
     mach_port_t recv_port;
     mach_port_t task_self_port = task_self_trap();
@@ -43,13 +80,30 @@ int main(){
     receive_message_t received_msg;
     send_message_t    sent_msg;
     mach_msg_header_t* mach_hdr;
+    mach_msg_bits_t remote_bits = -1, local_bits = -1;
+    int choice;
+
+    while((choice = getopt(argc, argvp, "r:l:")) != -1){
+        switch(choice){
+            case 'r':
+                remote_bits = get_name_to_bits(optarg);
+                break;
+            case 'l':
+                local_bits = get_name_to_bits(optarg);
+                break;
+            default:
+                usage(argc, argvp);
+                return -1;
+        }
+    }
+
+    if ((remote_bits == -1) || (local_bits == -1)) {
+        usage(argc, argvp);
+        return -1;
+    }
 
     str_mach_port_name(task_self_port, print_buffer, 1024);
     printf("Task self port: %s\n", print_buffer);
-
-     /* Get the bootstrap port for the current login context. */
-    result = task_get_bootstrap_port(task_self_port, &boot_port);
-    ERR_EXIT(result, "task_get_bootstrap_port failed.");
 
     str_mach_port_name(boot_port, print_buffer, 1024);
     printf("Bootstrap port: %s\n", print_buffer);
@@ -82,8 +136,9 @@ int main(){
         mach_hdr->msgh_id               = MULTIPLEX_ID;
         mach_hdr->msgh_remote_port      = server_port;
         mach_hdr->msgh_local_port       = recv_port;
-        mach_hdr->msgh_bits             = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND,
-                                                         MACH_MSG_TYPE_MAKE_SEND_ONCE);
+        mach_hdr->msgh_bits             = MACH_MSGH_BITS(remote_bits,
+                                                         local_bits);
+
         mach_hdr->msgh_size             = sizeof(sent_msg);
 
         fprintf(stdout, "**** Sending Message with header:\n");

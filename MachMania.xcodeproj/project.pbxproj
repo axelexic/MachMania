@@ -6,58 +6,15 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		56FAB90814DC90BD002E62E6 /* MachMania */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 56FAB90914DC90BD002E62E6 /* Build configuration list for PBXAggregateTarget "MachMania" */;
-			buildPhases = (
-			);
-			dependencies = (
-				56FAB90D14DC90C6002E62E6 /* PBXTargetDependency */,
-				56FAB90F14DC90C8002E62E6 /* PBXTargetDependency */,
-			);
-			name = MachMania;
-			productName = MachMania;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		56DF377414DCAB7100BC98C5 /* mach_ipc_server in CopyFiles */ = {isa = PBXBuildFile; fileRef = 56FAB8FE14DC90A3002E62E6 /* mach_ipc_server */; };
-		56DF377514DCAB8000BC98C5 /* mach_ipc_client in CopyFiles */ = {isa = PBXBuildFile; fileRef = 56FAB8EF14DC908C002E62E6 /* mach_ipc_client */; };
 		56FAB8F414DC908C002E62E6 /* mach_ipc_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 56FAB8F314DC908C002E62E6 /* mach_ipc_client.c */; };
 		56FAB90214DC90A3002E62E6 /* mach_ipc_server.c in Sources */ = {isa = PBXBuildFile; fileRef = 56FAB90114DC90A3002E62E6 /* mach_ipc_server.c */; };
 		56FE3F1914DD050C005479D3 /* Common.c in Sources */ = {isa = PBXBuildFile; fileRef = 56FE3F1814DD050C005479D3 /* Common.c */; };
 		56FE3F1A14DD050C005479D3 /* Common.c in Sources */ = {isa = PBXBuildFile; fileRef = 56FE3F1814DD050C005479D3 /* Common.c */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		56FAB90C14DC90C6002E62E6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 56FAB8E414DC9071002E62E6 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 56FAB8EE14DC908C002E62E6;
-			remoteInfo = mach_ipc_client;
-		};
-		56FAB90E14DC90C8002E62E6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 56FAB8E414DC9071002E62E6 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 56FAB8FD14DC90A3002E62E6;
-			remoteInfo = mach_ipc_server;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
-		56FAB8ED14DC908C002E62E6 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
-			dstPath = /tmp;
-			dstSubfolderSpec = 0;
-			files = (
-				56DF377514DCAB8000BC98C5 /* mach_ipc_client in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		56FAB8FC14DC90A3002E62E6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -166,7 +123,6 @@
 			buildPhases = (
 				56FAB8EB14DC908C002E62E6 /* Sources */,
 				56FAB8EC14DC908C002E62E6 /* Frameworks */,
-				56FAB8ED14DC908C002E62E6 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -216,7 +172,6 @@
 			targets = (
 				56FAB8EE14DC908C002E62E6 /* mach_ipc_client */,
 				56FAB8FD14DC90A3002E62E6 /* mach_ipc_server */,
-				56FAB90814DC90BD002E62E6 /* MachMania */,
 			);
 		};
 /* End PBXProject section */
@@ -241,19 +196,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		56FAB90D14DC90C6002E62E6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 56FAB8EE14DC908C002E62E6 /* mach_ipc_client */;
-			targetProxy = 56FAB90C14DC90C6002E62E6 /* PBXContainerItemProxy */;
-		};
-		56FAB90F14DC90C8002E62E6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 56FAB8FD14DC90A3002E62E6 /* mach_ipc_server */;
-			targetProxy = 56FAB90E14DC90C8002E62E6 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		56FAB8E914DC9071002E62E6 /* Debug */ = {
@@ -362,20 +304,6 @@
 			};
 			name = Release;
 		};
-		56FAB90A14DC90BD002E62E6 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		56FAB90B14DC90BD002E62E6 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -402,15 +330,6 @@
 			buildConfigurations = (
 				56FAB90614DC90A4002E62E6 /* Debug */,
 				56FAB90714DC90A4002E62E6 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		56FAB90914DC90BD002E62E6 /* Build configuration list for PBXAggregateTarget "MachMania" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				56FAB90A14DC90BD002E62E6 /* Debug */,
-				56FAB90B14DC90BD002E62E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
